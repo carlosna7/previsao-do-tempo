@@ -1,23 +1,18 @@
-const searchContainer = document.querySelector(".search-container")
-const searchInput = document.querySelector(".search-input")
-const searchBtn = document.querySelector(".search-btn")
 
-let counter = 0
+const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+const numero = ["0","1","2","3","4","5","6"]
 
-searchBtn.addEventListener("click", (e) => {
-    e.preventDefault()
+const time = new Date();
 
-    const value = searchInput.value
+const today = time.getDay();
 
-    console.log(value)
+let todayCounter = 0
 
-    if(counter < 1) {
-        console.log("teset<1")
-    }
-    else {
-        console.log("teset>1")
-    }
+const forecast = numero
 
-    counter++
-    searchInput.value = ""
-});
+forecast.forEach((numb) => {
+    console.log(`${numb} + ${days[today + todayCounter]}`)
+
+    todayCounter++
+})
+

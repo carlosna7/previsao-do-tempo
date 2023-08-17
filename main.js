@@ -6,7 +6,7 @@ const weatherForecastEl = document.querySelector("#weather-forecast");
 const currentTempEl = document.querySelector("#current-temp");
 const country = document.querySelector(".country")
 
-const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
 const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Otu', 'Nov', 'Dec'];
 const time = new Date();
 
@@ -42,12 +42,10 @@ function getWeatherData() {
         // const latitude = success.coords.latitude;
         // const longitude = success.coords.longitude;
         const {latitude, longitude} = success.coords;
-        // console.log({latitude, longitude})
         const searchInput = document.querySelector(".search-input")
         const searchBtn = document.querySelector(".search-btn")
 
         let counter = 0;
-        console.log("contador acima do fetch" + counter)
 
         if(counter === 0) {
             const link = `https://api.weatherbit.io/v2.0/current?lat=${latitude}&lon=${longitude}&key=${apiKey}&include=minutely`;
@@ -56,6 +54,7 @@ function getWeatherData() {
             fetch(link)
             .then(res => res.json())
             .then(data => {
+                console.log(`Dados resgatados pela coordenada (ao carregar a página)`)
                 console.log(data)
                 showWeatherData(data);
             })
@@ -63,11 +62,12 @@ function getWeatherData() {
             fetch(linkForecast)
             .then(res => res.json())
             .then(data => {
+                console.log(`Dados resgatados pela coordenada (ao carregar a página)`)
                 console.log(data)
                 showWeatherForecast(data);
             });
+
             counter++
-            console.log("contador abaixo do fetch" + counter)
         }
 
         if(counter >= 1) {
@@ -81,6 +81,7 @@ function getWeatherData() {
                 fetch(link)
                 .then(res => res.json())
                 .then(data => {
+                    console.log(`Dados resgatados ao pesquisar uma cidade`)
                     console.log(data)
                     showWeatherData(data);
                 })
@@ -88,6 +89,7 @@ function getWeatherData() {
                 fetch(linkForecast)
                 .then(res => res.json())
                 .then(data => {
+                    console.log(`Dados resgatados ao pesquisar uma cidade`)
                     console.log(data)
                     showWeatherForecast(data);
                 });
@@ -103,7 +105,7 @@ function showWeatherData(data) {
     const {icon} = data.data[0].weather
     const today = time.getDay();
 
-    timezonePlace.innerText = timezone;
+    timezonePlace.innerText = timezone.replace(/_/i, " ");
     country.innerHTML = `
         <p>${city_name}</p>
         <img src="https://flagsapi.com/${country_code}/flat/64.png">
@@ -148,7 +150,7 @@ function showWeatherData(data) {
 function showWeatherForecast(data) {
 
     const forecastData = data.data;
-    const today = time.getDay();
+    let weekDay = 0
     // const maxIndex0 = document.querySelector(".selectMax")
     // const minIndex0 = document.querySelector(".selectMin")
     const minMaxIndex = document.querySelector(".selectMin")
@@ -168,19 +170,28 @@ function showWeatherForecast(data) {
 
     if (forecastData.length !== 0) {
 
+        const today = time.getDay();
+        
         let forecastHTML2 = ""
 
+
         forecastData.slice(1, 7).forEach((forecast) => {
+            
             const {app_max_temp, app_min_temp} = forecast;
-    
+            const {icon} = forecast.weather;
+            
+            weekDay++
+            
             forecastHTML2 += `
             <div class="weather-forecast-item">
-                <div class="day">${days[today]}</div>
-                <img src="https://www.weatherbit.io/static/img/icons/c01d.png" alt="weather icon" class="w-icon">
+                <div class="day">${days[today + weekDay]}</div>
+                <img src="https://www.weatherbit.io/static/img/icons/${icon}.png" alt="weather icon" class="w-icon">
                 <div class="temp">Max / ${app_max_temp}&#176;C</div>
                 <div class="temp">Min / ${app_min_temp}&#176;C</div>
             </div>
             `;
+
+            
         });
 
         weatherForecastEl.innerHTML = forecastHTML2
